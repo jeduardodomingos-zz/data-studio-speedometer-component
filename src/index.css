@@ -1,0 +1,27 @@
+.half-circle {
+    z-index: 2;
+    border-bottom: 0;
+    background: white;
+}
+
+.half-circle-external {
+    position: absolute;
+    border-bottom: 0;
+    z-index: -1;
+    background: linear-gradient(259.74deg, #69E781 24.77%, #5695DF 41.73%, #FD5E4E 57.66%);
+}
+
+.pointer {
+    position: absolute;
+    background-color: gray;
+    z-index: 2;
+    transform-origin: 100% 0;
+}
+
+.pointer-base {
+    position: absolute;
+    background-color: gray;
+    z-index: 3;
+    border-radius: 100%;
+    transform-origin: 100% 100% 100% 100%;
+}

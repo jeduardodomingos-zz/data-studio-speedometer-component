@@ -1,0 +1,25 @@
+{
+  "name": "Visualization Package",
+  "organization": "JEDev",
+  "description": "My Community Visualizations Pacjage",
+  "logoUrl": "https://logo",
+  "organizationUrl": "https://myorg.com",
+  "supportUrl": "https://myorg.com",
+  "privacyPolicyUrl": "https://myorg.com",
+  "termsOfServiceUrl": "https://myorg.com",
+  "packageUrl": "https://myorg.com",
+  "devMode": "true",
+  "components": [
+    {
+      "id":"speedometer-data-chart",
+      "name": "speedometer-data-chart",
+      "description": "Speedometer Data Variation Chart",
+      "iconUrl": "https://url",
+      "resource": {
+        "js": "gs://ts-development/index.js",
+        "config": "gs://ts-development/index.json",
+        "css": "gs://ts-development/index.css"
+      }
+    }
+  ]
+}
