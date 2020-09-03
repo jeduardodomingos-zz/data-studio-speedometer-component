@@ -2,7 +2,7 @@ const dscc = require('@google/dscc');
 const viz = require('@google/dscc-scripts/viz/initialViz.js');
 const local = require('./localMessage.js');
 
-export const LOCAL = false;
+export const LOCAL = true;
 
 class External {
 
@@ -11,18 +11,18 @@ class External {
   get width() {
     return dscc.getWidth();
   }
-  
+
   get height() {
     const externalWidth = this.width;
     const externalHeight = (externalWidth / 2) + 10;
-  
+
     return externalHeight;
   }
 
    get radius() {
     const externalHeight = this.height;
     const externalRadius = externalHeight + 10;
-  
+
     return externalRadius;
   }
 
@@ -37,18 +37,18 @@ class Internal {
   get width() {
     return (this.external.width - (this.external.width * (10 / 100)));
   }
-  
+
   get height() {
     const internalWidth = this.width;
     const internalHeight = (internalWidth / 2) + 10;
-  
+
     return internalHeight;
   }
 
    get radius() {
     const externalHeight = this.height;
     const externalRadius = externalHeight + 10;
-  
+
     return externalRadius;
   }
 
@@ -65,18 +65,24 @@ class Internal {
 }
 
 class Pointer {
-  
-  constructor(internal, currentValue, maxValue) {
+
+  constructor(internal, currentValue, maxValue, minValue) {
     this.internal = internal;
     this.currentValue = currentValue;
     this.maxValue = maxValue;
+    this.minValue = minValue;
   }
 
   get rotation() {
-    const maxDegrees = 180;
-    const firstFactor = (this.currentValue * maxDegrees);
-    const degree = (firstFactor / this.maxValue);
-  
+    this.currentValue = ((this.currentValue > this.maxValue) ? this.maxValue : this.currentValue);
+    this.currentValue = ((this.currentValue < this.minValue) ? this.minValue : this.currentValue);
+    const center = ((Math.abs(this.maxValue) + Math.abs(this.minValue)) / 2);
+    const relation = ((this.maxValue - this.minValue) / this.maxValue);
+    const maxDegrees = (180 / relation);
+    const firstFactor = ((this.currentValue * maxDegrees) / (this.maxValue));
+    const SecondFactor = ((this.minValue * maxDegrees) / (center));
+    const degree = (firstFactor - SecondFactor);
+
     return degree;
   }
 
@@ -84,7 +90,7 @@ class Pointer {
     const pointerWidth = (this.currentValue < (this.maxValue / 2)) ? ((this.internal.width / 2) - (this.internal.width * (3/100))): ((this.internal.width / 2) - (this.internal.width * (3/100)));
     return pointerWidth;
   }
-  
+
   get height() {
     const pointerHeight = (this.width * (6.25 / 100));
     return pointerHeight;
@@ -109,7 +115,7 @@ class PointerBase {
   }
 
   get radius() {
-    return (this.internal.width * (7/100)); 
+    return (this.internal.width * (7/100));
   }
 
   get top() {
@@ -136,7 +142,7 @@ const makeExternal = (external) => {
 
 const makeInternal = (internal) => {
   const internalDiv = document.createElement('div');
-  
+
   internalDiv.setAttribute("id", "speedometer-internal");
   internalDiv.setAttribute("class", "half-circle");
   internalDiv.setAttribute("style", `width:${internal.width}px; height:${internal.height}px; border-top-left-radius:${internal.radius}px; border-top-right-radius:${internal.radius}px; margin-left: ${internal.left}px; margin-top: ${internal.top}px`);
@@ -162,13 +168,13 @@ const makePointerBase = (pointerBase) => {
   pointerBaseDiv.setAttribute("id","pointer-base-id");
   pointerBaseDiv.setAttribute("class", "pointer-base");
   pointerBaseDiv.setAttribute("style", `width: ${pointerBase.radius}px; height:${pointerBase.radius}px; margin-top:${pointerBase.top}px; margin-left:${pointerBase.left}px;`);
-  
+
   return pointerBaseDiv;
 }
- 
+
 const makeStylesheets = () => {
   let style = document.createElement('link');
-  
+
   style.setAttribute("rel","stylesheet");
   style.setAttribute("type", "text/css");
   style.setAttribute("href","./index.css");
@@ -178,15 +184,16 @@ const makeStylesheets = () => {
 
 // write viz code here
 const drawViz = (data) => {
-  
+
   var rowData = data.tables.DEFAULT;
 
   const maxValue = rowData[0]['maxValue'];
+  const minValue = rowData[0]['minValue'];
   const value = rowData[0]['value'];
 
   const external = new External();
   const internal = new Internal(external);
-  const pointer = new Pointer(internal, value, maxValue);
+  const pointer = new Pointer(internal, value, maxValue, minValue);
   const pointerBase = new PointerBase(internal);
 
   const style = makeStylesheets();
@@ -200,10 +207,10 @@ const drawViz = (data) => {
   internalDiv.appendChild(pointerDiv);
   internalDiv.appendChild(pointerBaseDiv);
   externalDiv.appendChild(internalDiv);
-  
+
   document.head.appendChild(style);
   document.body.appendChild(externalDiv);
-  
+
 };
 
 // renders locally

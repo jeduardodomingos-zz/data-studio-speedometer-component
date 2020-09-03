@@ -14,6 +14,15 @@
           }
         },
         {
+          "id": "minValue",
+          "label": "Min Value",
+          "type": "DIMENSION",
+          "options": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
           "id": "value",
           "label": "Value",
           "type": "METRIC",

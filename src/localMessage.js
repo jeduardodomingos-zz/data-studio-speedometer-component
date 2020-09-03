@@ -8,8 +8,9 @@ export const message = {
   tables: {
     DEFAULT: [
       {
-        maxValue: 100,
-        value: 30,
+        maxValue: 30,
+        minValue: 10,
+        value: 10,
       }
     ],
   },
